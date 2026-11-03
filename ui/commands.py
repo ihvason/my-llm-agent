@@ -64,7 +64,7 @@ class SessionState:
     # instance when switching sessions
     read_file_state: ReadFileState = field(default_factory=ReadFileState)
     # This session's TasksStore, injected into the task tools. Persisted under
-    # <project root>/.my-claude-code/projects/<project>/tasks/<session_id>/, so main
+    # <project root>/.my-llm-agent/projects/<project>/sessions/<session_id>/tasks/, so main
     # must construct it and pass it in
     tasks_store: TasksStore | None = None
     # Memory filenames already recalled and injected in this session; the same memory

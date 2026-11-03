@@ -11,6 +11,6 @@ __pycache__/
 .DS_Store
 
 # Local data (sessions, tasks, jobs, memory); agent definitions under agents/ are tracked
-.my-claude-code/*
-!.my-claude-code/agents/
-!.my-claude-code/agents/**
+.my-llm-agent/*
+!.my-llm-agent/agents/
+!.my-llm-agent/agents/**

@@ -55,9 +55,9 @@ def encode_project_path(path: str | Path) -> str:
 @cache
 def get_data_dir() -> Path:
     """
-    Root of this application's on-disk data: <project root>/.my-claude-code.
+    Root of this application's on-disk data: <project root>/.my-llm-agent.
     """
-    return get_project_root() / ".my-claude-code"
+    return get_project_root() / ".my-llm-agent"
 
 
 @cache

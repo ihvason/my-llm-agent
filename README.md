@@ -1,4 +1,4 @@
-# my-claude-code
+# my-llm-agent
 
 A minimal terminal coding agent built on Pydantic AI: a persistent REPL, a tool-calling
 agent loop, per-session storage, long-term memory, sub agents, progressive skills, and a
@@ -65,7 +65,7 @@ The app is an interactive TUI, so run it on a TTY: an SSH session, `tmux`/`scree
 service configured with a pty. It is not a headless daemon.
 
 ```bash
-git clone <repo> && cd my-claude-code
+git clone <repo> && cd my-llm-agent
 uv sync --frozen
 uv run --env-file .env python main.py
 ```
@@ -78,13 +78,13 @@ Server notes:
 - **Clipboard images.** Pasting images requires `xclip` and an X display. On a headless
   server the paste shortcut does nothing; reference images with `@path` instead.
 - **git.** @-mention completion uses `git ls-files`, so the `git` binary is expected.
-- **Data.** Everything is stored in `./.my-claude-code/` inside the repository; back up
+- **Data.** Everything is stored in `./.my-llm-agent/` inside the repository; back up
   that directory, and keep it out of the repository history (already gitignored).
 
 ## Data directory
 
 ```
-<repo>/.my-claude-code/
+<repo>/.my-llm-agent/
 ├── agents/                        custom sub agent definitions (tracked)
 ├── skills/                        custom skills (tracked)
 └── projects/<encoded-path>/

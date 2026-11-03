@@ -295,7 +295,7 @@ _register(
 
 def load_agent_types() -> list[AgentType]:
     """
-    Load custom agent definitions from <repo>/.my-claude-code/agents/*.md.
+    Load custom agent definitions from <repo>/.my-llm-agent/agents/*.md.
     The frontmatter supplies name / description / tools; the markdown body is the
     agent's system prompt.
 

@@ -12,8 +12,8 @@ from pydantic_ai.exceptions import ModelRetry
 
 from core.paths import get_data_dir
 
-USER_SKILLS_DIR = Path.home() / ".my-claude-code" / "skills"
-PROJECT_SKILLS_SUBDIR = Path(".my-claude-code") / "skills"
+USER_SKILLS_DIR = Path.home() / ".my-llm-agent" / "skills"
+PROJECT_SKILLS_SUBDIR = Path(".my-llm-agent") / "skills"
 FRONTMATTER_MAX_LINES = 100
 MAX_NAME_CHARS = 64
 MAX_DESCRIPTION_CHARS = 1024

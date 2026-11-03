@@ -13,10 +13,10 @@ from pydantic_ai.mcp import MCPToolset, StdioTransport
 from pydantic_ai.toolsets import AbstractToolset
 
 # User-level and project-level configs; project-level wins on name conflicts
-USER_CONFIG = Path.home() / ".my-claude-code" / "mcp.json"
+USER_CONFIG = Path.home() / ".my-llm-agent" / "mcp.json"
 PROJECT_CONFIG = Path(".mcp.json")
 
-LOG_DIR = Path.home() / ".my-claude-code" / "mcp-logs"
+LOG_DIR = Path.home() / ".my-llm-agent" / "mcp-logs"
 
 
 @dataclass

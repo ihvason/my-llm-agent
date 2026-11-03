@@ -164,9 +164,9 @@ async def main():
         file_history=FileHistory(session_id=session_id),
         job_registry=JobRegistry(session_id=session_id),
     )
-    print_welcome_banner("my-claude-code")
+    print_welcome_banner("my-llm-agent")
 
-    # Load custom agent definitions from <repo>/.my-claude-code/agents/
+    # Load custom agent definitions from <repo>/.my-llm-agent/agents/
     custom_agents = subagents.load_agent_types()
     if custom_agents:
         names = ", ".join(a.name for a in custom_agents)

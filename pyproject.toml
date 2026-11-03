@@ -1,5 +1,5 @@
 [project]
-name = "my-claude-code"
+name = "my-llm-agent"
 version = "0.1.0"
 description = "A minimal terminal coding agent"
 readme = "README.md"
@@ -24,7 +24,7 @@ package = false
 [tool.ruff]
 line-length = 100
 target-version = "py312"
-extend-exclude = [".my-claude-code", ".venv"]
+extend-exclude = [".my-llm-agent", ".venv"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
