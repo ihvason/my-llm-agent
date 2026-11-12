@@ -21,19 +21,38 @@ uv sync --frozen
 
 ## Configure
 
-Credentials come from the environment:
+The model endpoint comes from the environment. With no `LLM_*` variables set the app
+talks to the hosted DeepSeek API:
 
 ```bash
 cp .env.example .env      # then set API_KEY
 uv run --env-file .env python main.py
 ```
 
-Or export the variable in the shell or service environment:
+To use a self-hosted OpenAI-compatible server, point it at the endpoint instead:
 
 ```bash
-export API_KEY=...
+LLM_BASE_URL=http://127.0.0.1:8000/v1 \
+LLM_MODEL=Qwen3-0.6B \
+LLM_API_KEY=local \
+LLM_CONTEXT_WINDOW=32768 \
+LLM_JSON_MODE=0 \
+LLM_MAX_COMPLETION_TOKENS=0 \
+LLM_STRICT_TOOLS=0 \
 uv run python main.py
 ```
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `LLM_BASE_URL` | DeepSeek API | OpenAI-compatible base URL, including `/v1` |
+| `LLM_MODEL` | `deepseek-flash` | Model id served by the endpoint |
+| `LLM_API_KEY` | `API_KEY`, else `local` | Key; a placeholder works for keyless local servers |
+| `LLM_CONTEXT_WINDOW` | `131072` | Must match the server's real context size |
+| `LLM_JSON_MODE` | `1` | Set `0` when `response_format` is unsupported |
+| `LLM_MAX_COMPLETION_TOKENS` | `1` | Set `0` to send `max_tokens` instead |
+| `LLM_STRICT_TOOLS` | `1` | Set `0` when strict tool schemas are rejected |
+
+Variables can also live in `.env` and be loaded with `uv run --env-file .env python main.py`.
 
 ## Run
 

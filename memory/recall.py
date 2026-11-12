@@ -4,25 +4,19 @@ request to pick relevant memories from the manifest, then wrap them as
 system-reminder messages and inject them into the conversation history.
 """
 
-import json
-import os
-
-from openai import AsyncOpenAI
 from pydantic_ai.messages import ModelRequest, UserPromptPart
 
 from core.console import print_step
+from core.llm import async_client, extract_json_object, settings
 from state import sessions as session
 
 from . import store
 
 # Like the classifier, this is a separate request outside the main conversation,
 # bypassing the agent framework
-_client = AsyncOpenAI(
-    api_key=os.environ.get("API_KEY"),
-    base_url="https://api.deepseek.com",
-)
+_client = async_client()
 
-RECALL_MODEL = "deepseek-flash"
+RECALL_MODEL = settings.model
 
 # Maximum number of memories recalled per turn
 MAX_RECALL = 5
@@ -47,6 +41,9 @@ async def _select(user_input: str, headers: list) -> list[str]:
     """
     manifest = store.format_manifest(headers)
     try:
+        # Ask for JSON mode only when the endpoint advertises it; otherwise the model
+        # may wrap the list in prose, which extract_json_object still handles.
+        json_mode = {"response_format": {"type": "json_object"}} if settings.json_mode else {}
         response = await _client.chat.completions.create(
             model=RECALL_MODEL,
             messages=[
@@ -57,9 +54,10 @@ async def _select(user_input: str, headers: list) -> list[str]:
                 },
             ],
             temperature=0,
-            response_format={"type": "json_object"},
+            **json_mode,
         )
-        selected = json.loads(response.choices[0].message.content).get("selected_memories") or []
+        payload = extract_json_object(response.choices[0].message.content or "")
+        selected = payload.get("selected_memories") or []
     except Exception:
         return []
     # The model may invent filenames; filter down to ones that actually exist

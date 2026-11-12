@@ -15,18 +15,21 @@ from rich.markdown import Markdown
 from rich.padding import Padding
 
 from core.console import console
+from core.llm import settings
 from media.mentions import build_mention_messages
 from state import sessions as session
 
 from .file_state import ReadFileState
 from .model import model
 
-# The model's context window size
-CONTEXT_WINDOW = 131_072
-# Output space reserved for the summary during a compaction call
-COMPACT_OUTPUT_RESERVE = 20_000
+# The model's context window size, configurable for the active endpoint
+CONTEXT_WINDOW = settings.context_window
+# Output space reserved for the summary during a compaction call. Scaled down on small
+# windows so the watermark stays meaningful: 20k reserve + 10k buffer would leave only
+# ~2.7k usable tokens on a 32k endpoint.
+COMPACT_OUTPUT_RESERVE = min(20_000, CONTEXT_WINDOW // 5)
 # Safety margin kept below the watermark
-AUTO_COMPACT_BUFFER = 10_000
+AUTO_COMPACT_BUFFER = min(10_000, CONTEXT_WINDOW // 10)
 # Stop attempting automatic compaction for this session after this many consecutive failures
 MAX_COMPACT_FAILURES = 3
 # Files restored after compaction: maximum count and total character budget

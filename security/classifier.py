@@ -7,17 +7,13 @@ the pending tool invocation via a sidecar LLM to return an "allow or block" verd
 """
 
 import json
-import os
 
-from openai import AsyncOpenAI
+from core.llm import async_client, extract_json_object, settings
 
-# Shares model and API key with the main loop, but dispatches standalone requests outside the agent framework
-_client = AsyncOpenAI(
-    api_key=os.environ.get("API_KEY"),
-    base_url="https://api.deepseek.com",
-)
+# Shares endpoint and model with the main loop, but dispatches standalone requests outside the agent framework
+_client = async_client()
 
-CLASSIFIER_MODEL = "deepseek-flash"
+CLASSIFIER_MODEL = settings.model
 
 # Classifier system prompt: enforces semantic risk evaluation beyond regex capabilities
 SYSTEM_PROMPT = """You are a security reviewer for a coding agent, responsible for determining whether a tool call can be automatically approved.
@@ -90,6 +86,9 @@ async def classify(messages, tool_name: str, args: dict) -> dict:
     """
     transcript = build_transcript(messages, tool_name, args)
     try:
+        # Ask for JSON mode only when the endpoint advertises it; otherwise the model
+        # may wrap the verdict in prose, which extract_json_object still handles.
+        json_mode = {"response_format": {"type": "json_object"}} if settings.json_mode else {}
         response = await _client.chat.completions.create(
             model=CLASSIFIER_MODEL,
             messages=[
@@ -98,10 +97,9 @@ async def classify(messages, tool_name: str, args: dict) -> dict:
             ],
             # Deterministic evaluation without sampling variance
             temperature=0,
-            # Enforce structured JSON response
-            response_format={"type": "json_object"},
+            **json_mode,
         )
-        verdict = json.loads(response.choices[0].message.content)
+        verdict = extract_json_object(response.choices[0].message.content or "")
         return {
             "should_block": bool(verdict["should_block"]),
             "reason": str(verdict.get("reason", "No reason provided")),
